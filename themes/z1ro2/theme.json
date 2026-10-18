@@ -1,0 +1,11 @@
+{
+  "id": "z1ro2",
+  "name": "Z1ro2 霓虹开屏",
+  "description": "DSH Neon Splash v3 开屏小剧场：模糊醒来 → 终端敲命令 → 登录 → AR HUD → 弹幕（约8.5秒）",
+  "builtin": true,
+  "order": 4,
+  "thumbnail": "thumbnail.png",
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/z1ro2",
+  "params": []
+}

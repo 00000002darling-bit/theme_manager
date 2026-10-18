@@ -1,0 +1,10 @@
+{
+  "id": "default",
+  "name": "原版登录",
+  "description": "框架出厂默认登录页（兜底主题，任何主题都能切回这里）",
+  "builtin": true,
+  "login": "assets/Login.js",
+  "params": [],
+  "order": 0,
+  "thumbnail": "thumbnail.png"
+}

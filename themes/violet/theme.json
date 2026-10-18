@@ -1,0 +1,15 @@
+{
+  "id": "violet",
+  "name": "Violet 紫罗兰开机",
+  "description": "紫罗兰永恒花园气质的开机动画：画像从模糊中显影 + 暖金进度线 + 火漆印，播完进入登录",
+  "builtin": true,
+  "order": 3,
+  "thumbnail": "thumbnail.png",
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/violet",
+  "params": [
+    {"key": "seal", "label": "火漆印", "type": "select",
+     "options": [{"value": "true", "label": "显示（进度满后盖印）"}, {"value": "false", "label": "不显示"}],
+     "default": "true", "hint": "收尾时右下角盖红色火漆印"}
+  ]
+}

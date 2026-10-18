@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>主题模块</title>
+<style>
+  :root{
+    --amber:#e8a020; --amber-b:#ffc043; --amber-d:#8a5e10;
+    --text:#d8c090; --text-dim:#8a7248; --text-faint:#4a3f28;
+    --bg:#0b0906; --bg-panel:#12100b; --bg-win:#0d0a06;
+    --green:#b8c840; --red:#e05030;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:"SF Mono",Menlo,Monaco,Consolas,"Courier New",monospace;
+    font-size:13px;line-height:1.6;padding:22px;max-width:900px;-webkit-font-smoothing:antialiased}
+  h1{font-size:16px;letter-spacing:.22em;color:var(--amber-b);font-weight:700;text-transform:uppercase}
+  .sub{margin-top:4px;font-size:11px;color:var(--text-dim);letter-spacing:.05em;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .card{background:var(--bg-panel);border:1px solid var(--amber-d);display:flex;flex-direction:column;overflow:hidden}
+  .card.active{border-color:var(--amber);box-shadow:0 0 0 1px rgba(232,160,32,.35),0 0 18px rgba(232,160,32,.15)}
+  .thumb{height:128px;background:var(--bg-win);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--amber-d)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb .noimg{color:var(--text-faint);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+  .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .name{font-size:13px;letter-spacing:.08em;color:var(--amber-b);font-weight:700}
+  .desc{font-size:11px;color:var(--text-dim);min-height:32px}
+  .badge{font-size:10px;letter-spacing:.14em;color:var(--green)}
+  .badge.off{color:var(--red)}
+  .ops{display:flex;gap:8px;margin-top:auto}
+  button{background:transparent;border:1px solid var(--amber);color:var(--amber-b);font-family:inherit;
+    font-size:11px;letter-spacing:.16em;padding:7px 10px;cursor:pointer;text-transform:uppercase;transition:background .18s}
+  button:hover:not(:disabled){background:rgba(232,160,32,.12)}
+  button:disabled{opacity:.45;cursor:wait}
+  button.primary{background:rgba(232,160,32,.14)}
+  button.danger{border-color:var(--red);color:var(--red)}
+  button.danger:hover:not(:disabled){background:rgba(224,80,48,.12)}
+  #editor{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px}
+  #editor.open{display:flex}
+  .modal{background:var(--bg-panel);border:1px solid var(--amber);max-width:520px;width:100%;max-height:86vh;overflow:auto;padding:20px 22px;position:relative}
+  .modal h2{font-size:14px;letter-spacing:.18em;color:var(--amber-b);text-transform:uppercase}
+  .modal .close{position:absolute;right:14px;top:12px;background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;padding:4px 8px}
+  .field{margin-top:14px}
+  .field label{display:block;font-size:11px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px}
+  .field .hint{font-size:10px;color:var(--text-faint);margin-top:4px}
+  input[type=text],select{width:100%;background:var(--bg-win);border:1px solid var(--amber-d);color:var(--text);
+    font-family:inherit;font-size:13px;padding:8px 10px;outline:none}
+  input[type=text]:focus,select:focus{border-color:var(--amber)}
+  .photo-preview{width:86px;height:86px;background:var(--bg-win);border:1px solid var(--amber-d);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px}
+  .photo-preview img{width:100%;height:100%;object-fit:cover}
+  .photo-preview .empty{color:var(--text-faint);font-size:10px;letter-spacing:.1em;text-align:center;padding:4px}
+  .modal .ops{margin-top:18px;display:flex;gap:10px;justify-content:flex-end}
+  .msg{margin-top:14px;font-size:11px;min-height:16px}
+  .msg.ok{color:var(--green)}
+  .msg.bad{color:var(--red)}
+  .tips{margin-top:22px;border-top:1px dashed var(--amber-d);padding-top:12px;font-size:11px;color:var(--text-dim);line-height:1.9}
+  .tips b{color:var(--amber)}
+</style>
+</head>
+<body>
+  <h1>主题模块</h1>
+  <div class="sub">LOGIN THEME MANAGER // 多主题 · 编辑 · 重置 · 启用</div>
+
+  <div class="grid" id="grid"></div>
+  <div class="msg" id="msg"></div>
+
+  <div id="editor"><div class="modal" id="editorBox"></div></div>
+
+  <div class="tips">
+    <b>说明</b><br>
+    · <b>启用</b>：把该主题应用为面板登录页（「原版登录」为内置兜底主题，随时可切回）<br>
+    · <b>编辑</b>：修改主题参数（姓名 / 二维码内容 / 配音 / 照片），保存后可再「保存并启用」<br>
+    · <b>重置</b>：把该主题已改动的参数恢复为「初始默认」，不会改变当前登录页<br>
+    · 切换后打开登录页前请<b>强制刷新浏览器</b>（Ctrl+Shift+R / 手机清缓存）<br>
+    · 禁用本模块（插件页模块区）会自动恢复原版登录
+  </div>
+  <div class="msg" id="retryMsg" style="display:none">
+    <button id="btnRetry" type="button">重新加载</button>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+  var grid = document.getElementById('grid');
+  var msgEl = document.getElementById('msg');
+  var editor = document.getElementById('editor');
+  var editorBox = document.getElementById('editorBox');
+  var retryWrap = document.getElementById('retryMsg');
+  var themes = [];
+  var activeId = null;
+  var editId = null;
+  var editParams = {};
+
+  function msg(v, ok, retry) {
+    msgEl.textContent = v;
+    msgEl.className = 'msg ' + (ok ? 'ok' : 'bad');
+    if (retryWrap) retryWrap.style.display = retry ? 'block' : 'none';
+  }
+  function edMsg(v, ok) { var m = document.querySelector('#editorBox .msg'); if (m) { m.textContent = v; m.className = 'msg ' + (ok ? 'ok' : 'bad'); } }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function findT(id) { for (var i = 0; i < themes.length; i++) if (themes[i].id === id) return themes[i]; return null; }
+
+  /* 请求层: 同 ai_llm 官方模块写法(显式凭证 + 错误带详情) */
+  function api(url, opts) {
+    var o = opts || {};
+    o.credentials = 'same-origin';
+    if (o.body && !(o.body instanceof FormData) && !o.headers) {
+      o.headers = { 'Content-Type': 'application/json' };
+    }
+    return fetch(url, o).then(function (r) {
+      return r.text().then(function (raw) {
+        var d = {};
+        try { d = raw ? JSON.parse(raw) : {}; } catch (e) { d = { message: raw }; }
+        if (!r.ok || d.success === false) {
+          var err = new Error((d && d.message) ? d.message : ('HTTP ' + r.status));
+          err.status = r.status;
+          throw err;
+        }
+        return d;
+      });
+    });
+  }
+
+  function renderList() {
+    grid.innerHTML = '';
+    themes.forEach(function (t) {
+      var card = document.createElement('div');
+      card.className = 'card' + (t.id === activeId ? ' active' : '');
+      card.__tid = t.id;
+      var thumb = t.has_thumbnail
+        ? '<img src="/api/ext/theme/thumb/' + encodeURIComponent(t.id) + '" alt="">'
+        : '<div class="noimg">' + (t.id === 'default' ? 'DEFAULT' : 'NO-PREVIEW') + '</div>';
+      var ops = '<button data-act="edit">编辑</button><button data-act="reset">重置</button>';
+      if (t.id !== activeId) ops = '<button data-act="apply" class="primary">启用</button>' + ops;
+      card.innerHTML = '<div class="thumb">' + thumb + '</div>' +
+        '<div class="body"><div class="name">' + esc(t.name) + '</div>' +
+        '<div class="desc">' + esc(t.description || '') + '</div>' +
+        '<div class="badge' + (t.id === activeId ? '' : ' off') + '">' + (t.id === activeId ? '● 已启用' : '未启用') + '</div>' +
+        '<div class="ops">' + ops + '</div></div>';
+      var _ab = card.querySelector('[data-act="apply"]');
+      var _eb = card.querySelector('[data-act="edit"]');
+      var _rb = card.querySelector('[data-act="reset"]');
+      if (_ab) _ab.onclick = function () { doApply(t.id); };
+      if (_eb) _eb.onclick = function () { openEditor(t.id); };
+      if (_rb) _rb.onclick = function () { doReset(t.id); };
+      grid.appendChild(card);
+    });
+  }
+
+  /* 启用后局部刷新(只改状态标记与按钮, 不重建不跳转) */
+  function refreshActive() {
+    Array.prototype.forEach.call(grid.querySelectorAll('.card'), function (card) {
+      var on = card.__tid === activeId;
+      card.classList.toggle('active', on);
+      var b = card.querySelector('.badge');
+      b.classList.toggle('off', !on);
+      b.innerHTML = on ? '● 已启用' : '未启用';
+      var ops = card.querySelector('.ops');
+      var ab = card.querySelector('[data-act="apply"]');
+      if (on) { if (ab) ab.remove(); }
+      else if (!ab) {
+        var n = document.createElement('button');
+        n.className = 'primary'; n.type = 'button'; n.textContent = '启用';
+        n.onclick = (function (id) { return function () { doApply(id); }; })(card.__tid);
+        ops.insertBefore(n, ops.firstChild);
+      }
+    });
+  }
+
+  function doApply(id) {
+    msg('正在启用主题…', true, false);
+    api('/api/ext/theme/apply', { method: 'POST', body: JSON.stringify({ id: id }) })
+      .then(function (d) {
+        activeId = d.active; refreshActive();
+        msg('已启用「' + (findT(id) || {}).name + '」· 强制刷新登录页查看', true, false);
+      })
+      .catch(function (e) { msg('启用失败: ' + (e.message || e), false, false); });
+  }
+
+  function doReset(id) {
+    msg('正在重置参数…', true, false);
+    api('/api/ext/theme/reset', { method: 'POST', body: JSON.stringify({ id: id }) })
+      .then(function (d) {
+        var t = findT(id); if (t) t.params = d.params;
+        if (editor.classList.contains('open') && editId === id) openEditor(id);
+        msg('已重置「' + (findT(id) || {}).name + '」为初始默认参数', true, false);
+      })
+      .catch(function (e) { msg('重置失败: ' + (e.message || e), false, false); });
+  }
+
+  function buildField(p, params) {
+    var val = params[p.key];
+    var control;
+    if (p.type === 'select') {
+      control = '<select data-key="' + esc(p.key) + '">' + (p.options || []).map(function (o) {
+        return '<option value="' + esc(o.value) + '"' + (String(val) === String(o.value) ? ' selected' : '') + '>' + esc(o.label) + '</option>';
+      }).join('') + '</select>';
+    } else if (p.type === 'image') {
+      control = '<div class="photo-preview" data-pv="' + esc(p.key) + '">' +
+        (val ? '<img src="' + val + '" alt="">' : '<div class="empty">无照片</div>') + '</div>' +
+        '<input type="file" accept="image/*" data-file="' + esc(p.key) + '">';
+    } else {
+      control = '<input type="text" data-key="' + esc(p.key) + '" value="' + esc(String(val == null ? '' : val)) + '">';
+    }
+    return '<div class="field"><label>' + esc(p.label) + '</label>' + control +
+      (p.hint ? '<div class="hint">' + esc(p.hint) + '</div>' : '') + '</div>';
+  }
+
+  function openEditor(id) {
+    var t = findT(id); if (!t) return;
+    editId = id;
+    editParams = JSON.parse(JSON.stringify(t.params || {}));
+    var html = '<h2>编辑 · ' + esc(t.name) + '</h2><button class="close" id="edClose">✕</button>';
+    (t.params_def || []).forEach(function (p) { html += buildField(p, editParams); });
+    html += '<div class="ops"><button id="edSave">保存</button>' +
+      '<button id="edApply" class="primary">保存并启用</button><button id="edCancel" class="danger">取消</button></div>' +
+      '<div class="msg"></div>';
+    editorBox.innerHTML = html;
+    bindEditor();
+    editor.classList.add('open');
+  }
+
+  function bindEditor() {
+    document.getElementById('edClose').onclick = closeEditor;
+    document.getElementById('edCancel').onclick = closeEditor;
+    document.getElementById('edSave').onclick = function () { saveEditor(false); };
+    document.getElementById('edApply').onclick = function () { saveEditor(true); };
+    editorBox.querySelectorAll('input[type=text]').forEach(function (i) {
+      i.oninput = function () { editParams[i.dataset.key] = i.value; };
+    });
+    editorBox.querySelectorAll('select').forEach(function (s) {
+      s.onchange = function () { editParams[s.dataset.key] = s.value; };
+    });
+    editorBox.querySelectorAll('input[type=file]').forEach(function (f) {
+      f.onchange = function () {
+        var file = f.files && f.files[0];
+        if (!file) return;
+        if (file.size > 300 * 1024) { edMsg('照片过大（>300KB），建议压缩后再传', false); return; }
+        var rd = new FileReader();
+        rd.onload = function () {
+          editParams[f.dataset.file] = rd.result;
+          var pv = editorBox.querySelector('[data-pv="' + f.dataset.file + '"]');
+          if (pv) pv.innerHTML = '<img src="' + rd.result + '" alt="">';
+        };
+        rd.readAsDataURL(file);
+      };
+    });
+  }
+
+  function closeEditor() { editor.classList.remove('open'); editId = null; }
+
+  function saveEditor(alsoApply) {
+    var id = editId; if (!id) return;
+    edMsg('保存中…', true);
+    api('/api/ext/theme/save', { method: 'POST', body: JSON.stringify({ id: id, params: editParams }) })
+      .then(function (d) {
+        var t = findT(id); if (t) t.params = d.params;
+        if (!alsoApply) { closeEditor(); renderList(); msg('已保存「' + t.name + '」，点卡片「启用」应用到登录页', true, false); return; }
+        return api('/api/ext/theme/apply', { method: 'POST', body: JSON.stringify({ id: id }) })
+          .then(function (a) {
+            activeId = a.active; closeEditor(); renderList();
+            msg('已保存并启用「' + t.name + '」· 强制刷新登录页查看', true, false);
+          });
+      })
+      .catch(function (e) { edMsg('操作失败: ' + (e.message || e), false); });
+  }
+
+  editor.addEventListener('click', function (e) { if (e.target === editor) closeEditor(); });
+  var retryBtn = document.getElementById('btnRetry');
+  if (retryBtn) retryBtn.onclick = function () { loadThemes(); };
+
+  function loadThemes() {
+    msg('正在加载主题…', true, false);
+    api('/api/ext/theme/list')
+      .then(function (d) {
+        themes = d.themes; activeId = d.active; renderList();
+        msg('', true, false);
+      })
+      .catch(function (e) { msg('主题模块加载失败: ' + (e.message || e), false, true); });
+  }
+
+  loadThemes();
+})();
+</script>
+</body>
+</html>

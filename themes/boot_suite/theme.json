@@ -1,0 +1,19 @@
+{
+  "id": "boot_suite",
+  "name": "六幕冷启动",
+  "description": "DeepSeek 开机仪式感：黑幕鲸鱼标识 → 过曝洗白 → 技术档案 → 身份确认 → 欢迎揭幕（零音频文件）",
+  "builtin": true,
+  "order": 6,
+  "thumbnail": "thumbnail.png",
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/suite",
+  "params": [
+    {
+      "key": "identity",
+      "label": "身份名称",
+      "type": "text",
+      "default": "JOYCE MOORE",
+      "hint": "终幕「欢迎 <身份名称> 访问」里显示的名字"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "ueg550c",
+  "name": "550C · UEG 授权",
+  "description": "550C 开机动画 + 联合政府访问授权登录界面",
+  "builtin": true,
+  "thumbnail": "thumbnail.png",
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/dsh550c",
+  "params": [
+    {
+      "key": "name",
+      "label": "操作员姓名",
+      "type": "text",
+      "default": "刘培强",
+      "hint": "显示在身份卡上的姓名"
+    },
+    {
+      "key": "qr",
+      "label": "二维码内容",
+      "type": "text",
+      "default": "UEG-550C-ACCESS",
+      "hint": "驱动身份卡二维码图案的种子内容，可随意修改"
+    },
+    {
+      "key": "voice",
+      "label": "配音",
+      "type": "select",
+      "options": [
+        {
+          "value": "male",
+          "label": "男声"
+        },
+        {
+          "value": "female",
+          "label": "女声"
+        }
+      ],
+      "default": "male",
+      "hint": "UEG 授权界面配音"
+    },
+    {
+      "key": "photo",
+      "label": "照片",
+      "type": "image",
+      "default": "",
+      "hint": "身份卡照片位（建议方形 PNG/JPG，会自动写入）"
+    }
+  ],
+  "order": 1
+}

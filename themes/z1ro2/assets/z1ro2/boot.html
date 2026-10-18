@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Z1ro2 Splash</title>
+</head>
+<body style="margin:0;background:#000">
+<script src="react.js"></script>
+<script src="react-dom.js"></script>
+<script>
+/* DSH 模块加载器最小模拟 */
+window.__ModuleLoader__ = { load: function (mod) { window.__z1ro2Module = mod; } };
+function require(name) {
+  if (name === 'react') return window.React;
+  if (name === 'react-dom' || name === 'react-dom/client') return window.ReactDOM;
+  throw new Error('require: ' + name);
+}
+</script>
+<script src="client.js"></script>
+<script>
+(function () {
+  var P = window.parent, S = function (m) { try { P.postMessage(m, '*') } catch (e) {} };
+  try {
+    var mod = window.__z1ro2Module;
+    if (!mod) { S('z1ro2-err: ModuleLoader 未拿到模块'); S('z1ro2-done'); return; }
+    var plugin = mod.factory(require);
+    if (typeof plugin !== 'object' || typeof plugin.apply !== 'function') {
+      S('z1ro2-err: plugin 结构异常 (' + (typeof plugin) + ')'); S('z1ro2-done'); return;
+    }
+    var cleanup = plugin.apply({});
+    S('z1ro2-debug: applyRet=' + (typeof cleanup));
+    S('z1ro2-mounted');
+  } catch (e) {
+    S('z1ro2-err: ' + (e && e.message || e));
+    S('z1ro2-done');
+  }
+})();
+</script>
+</body>
+</html>

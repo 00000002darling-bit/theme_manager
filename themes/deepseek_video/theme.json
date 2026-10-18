@@ -1,0 +1,71 @@
+{
+  "id": "deepseek_video",
+  "name": "DeepSeek 视频片头",
+  "description": "DeepSeek 官方开场视频作为登录前动画，播完自动进入登录；可换片头、循环、静音",
+  "builtin": true,
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/dshtheme",
+  "params": [
+    {
+      "key": "video",
+      "label": "片头片段",
+      "type": "select",
+      "options": [
+        {
+          "value": "startup",
+          "label": "启动问题 (8s)"
+        },
+        {
+          "value": "brand",
+          "label": "品牌片头"
+        },
+        {
+          "value": "cyberpunk",
+          "label": "赛博朋克"
+        },
+        {
+          "value": "awakening",
+          "label": "数字角色苏醒"
+        }
+      ],
+      "default": "startup",
+      "hint": "选择作为登录前动画的视频片段"
+    },
+    {
+      "key": "loop",
+      "label": "循环播放",
+      "type": "select",
+      "options": [
+        {
+          "value": "false",
+          "label": "播完自动进入登录"
+        },
+        {
+          "value": "true",
+          "label": "循环播放，点按进入登录"
+        }
+      ],
+      "default": "false",
+      "hint": "视频结束后是否循环"
+    },
+    {
+      "key": "muted",
+      "label": "静音",
+      "type": "select",
+      "options": [
+        {
+          "value": "true",
+          "label": "静音"
+        },
+        {
+          "value": "false",
+          "label": "有声音"
+        }
+      ],
+      "default": "true",
+      "hint": "移动端若设为有声，需先点击一下才能出声"
+    }
+  ],
+  "order": 2,
+  "thumbnail": "thumbnail.png"
+}

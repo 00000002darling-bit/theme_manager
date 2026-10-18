@@ -1,0 +1,44 @@
+{
+  "id": "mo_startup",
+  "name": "MO 红警开机",
+  "description": "红色警戒2心灵终结主题开机画面：四大阵营独立序列 + 副官语音，播完进入登录",
+  "builtin": true,
+  "order": 5,
+  "thumbnail": "thumbnail.png",
+  "template": "assets/Login.js.tpl",
+  "assets_dir": "assets/mo",
+  "params": [
+    {
+      "key": "faction",
+      "label": "阵营",
+      "type": "select",
+      "options": [
+        {
+          "value": "allied",
+          "label": "同盟国联军"
+        },
+        {
+          "value": "epsilon",
+          "label": "厄普西隆军"
+        },
+        {
+          "value": "foehn",
+          "label": "焚风反抗军"
+        },
+        {
+          "value": "soviet",
+          "label": "苏联红军"
+        }
+      ],
+      "default": "allied",
+      "hint": "选择开机画面的阵营与副官语音"
+    },
+    {
+      "key": "commander",
+      "label": "指挥官称呼",
+      "type": "text",
+      "default": "指挥官",
+      "hint": "出现在身份确认/语音播报中的称呼（如：指挥官 / 同志 / 司令官）"
+    }
+  ]
+}

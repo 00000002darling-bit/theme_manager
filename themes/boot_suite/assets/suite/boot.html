@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Startup</title>
+<link rel="stylesheet" href="splash.css">
+</head>
+<body style="margin:0;background:#000">
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var id = q.get('identity');
+  if (id) {
+    window.__DSH_STARTUP__ = window.__DSH_STARTUP__ || {};
+    window.__DSH_STARTUP__.identity = id;
+  }
+})();
+</script><script src="suite_splash.js"></script>
+<script>
+(function () {
+  var t = 0, x = 0, y = 0;
+  window.addEventListener('pointerup', function (e) {
+    var now = Date.now(), dx = (e.clientX || 0) - x, dy = (e.clientY || 0) - y, dt = now - t;
+    t = now; x = e.clientX || 0; y = e.clientY || 0;
+    if (dt > 0 && dt < 400 && Math.abs(dx) < 80 && Math.abs(dy) < 80) {
+      try { window.parent.postMessage('suite-done', '*') } catch (_) {}
+    }
+  }, true);
+})();
+</script></body>
+</html>
